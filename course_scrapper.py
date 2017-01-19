@@ -1,6 +1,4 @@
-# import urllib.request
 import urllib2
-
 import re
 from bs4 import BeautifulSoup, Comment
 from datetime import datetime
@@ -43,18 +41,15 @@ class CoursePage:
         list2 = []
         now = datetime.now()
 
-
         for link in soup.findAll('span'):
-            x=re.search(r"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}",link.getText())
-            r=re.search(r"(HW|Homework)([0-9]| [0-9])",link.getText())
+            x = re.search(r"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}",link.getText())
+            r = re.search(r"(HW|Homework)([0-9]| [0-9])",link.getText())
             if x is not None:
                 # print "this is the date",x.group(0) if x is not None else None
                 list1.append(x.group(0))
             if r is not None:
                 # print "this is the name",r.group(0) if r is not None else None
                 list2.append(r.group(0))
-            #print link.getText()
-            #print link.getText()
 
         for link in soup.findAll('table'):
             expected = ''
@@ -77,9 +72,9 @@ class CoursePage:
         return lst
 
         return zip(list2,list1)
-        return lst
 
-    def unicode_to_str(self, uni_str):
+    @staticmethod
+    def unicode_to_str(uni_str):
         return unicodedata.normalize('NFKD', uni_str).encode('ascii', 'ignore')
 
     def __folder_get_page(self, soup):

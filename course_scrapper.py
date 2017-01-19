@@ -5,7 +5,8 @@ import re
 from bs4 import BeautifulSoup, Comment
 from datetime import datetime
 import helper_funcs
-import pdb
+import unicodedata
+
 
 class CoursePage:
     def __init__(self, number):
@@ -27,17 +28,22 @@ class CoursePage:
 
     @property
     def get_assignment_data(self):
-        return "Course "+self.name + "\n\tAssignment " + self.lastAss + "\n\tSubmission Date: " + str(self.currAssDate)
+        name = "Course "+self.unicode_to_str(self.name)
+        ass = "There are currently no active assignments" if not self.lastAss else "Assignment "+self.lastAss
+        date = "" if not self.lastAss else "\n\tSubmission Date: "+self.currAssDate
+        return name + "\n\t" + ass + date
 
     def __assignment_name_appender(self, link):
         if link.h2 is not None:
-            self.lastAss.append(helper_funcs.get_ass_name(link))
+            self.lastAss.append(self.unicode_to_str(helper_funcs.get_ass_name(link)))
 
     def __get_expected(self, soup):
         lst = []
         list1 = []
         list2 = []
         now = datetime.now()
+
+
         for link in soup.findAll('span'):
             x=re.search(r"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}",link.getText())
             r=re.search(r"(HW|Homework)([0-9]| [0-9])",link.getText())
@@ -47,23 +53,34 @@ class CoursePage:
             if r is not None:
                 # print "this is the name",r.group(0) if r is not None else None
                 list2.append(r.group(0))
-            print link.getText()
+            #print link.getText()
             #print link.getText()
 
-            if 'Expected' in link.getText():
-                for i in link.findAll('tr'):
-                    if 'Expected' in i.getText():
-                        i = helper_funcs.string_to_date(i.getText())
-                        if (now.date() >= i.date()) and ('Due date' in link.getText()):
-                            lst.append(helper_funcs.get_due(link))
-                            self.__assignment_name_appender(link)
-                            break
-            elif ('Expected' not in link.getText()) and ('Due date' in link.getText()):
-                lst.append(helper_funcs.get_due(link))
+        for link in soup.findAll('table'):
+            expected = ''
+            due = ''
+            for t in link.findAll('tr'):
+                for s in t.findAll('span'):
+                    if u'data-lang-en' in s.attrs and u'Expected' in s.attrs[u'data-lang-en']:
+                        expected = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
+
+                    if u'data-lang-en' in s.attrs and u'Due date' in s.attrs[u'data-lang-en']:
+                        due = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
+
+            if due != '' or expected != '':
+                if expected != '' and now.date() >= expected.date() and due != '':
+                    lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
+                elif expected == '' and due != '':
+                    lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
                 self.__assignment_name_appender(link)
+
+        return lst
 
         return zip(list2,list1)
         return lst
+
+    def unicode_to_str(self, uni_str):
+        return unicodedata.normalize('NFKD', uni_str).encode('ascii', 'ignore')
 
     def __folder_get_page(self, soup):
         comments = soup.findAll(text=lambda text: isinstance(text, Comment))
@@ -93,9 +110,12 @@ class CoursePage:
         soup = BeautifulSoup(urllib2.urlopen((url)), 'html.parser')
         lst = self.__get_expected(soup)
         self.assignments_list = lst
-        # lst = helper_funcs.prettify_list(lst)
+        lst = helper_funcs.prettify_list(lst)
+        if not lst:
+            self.lastAss = []
+            return
         # lst.sort(key=lambda d: datetime.strptime(d, "%d/%m/%Y, %H:%M") if ':' in d else datetime.strptime(d, "%d/%m/%Y"))
-        # self.currAssDate = lst[0]
-        # while len(lst) != len(self.lastAss):
-        #     self.lastAss.remove(self.lastAss[0])
-        # self.lastAss = self.lastAss[0]
+        self.currAssDate = lst[0]
+        while len(lst) != len(self.lastAss):
+            self.lastAss.remove(self.lastAss[0])
+        self.lastAss = self.lastAss[0]

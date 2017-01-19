@@ -49,16 +49,17 @@ def __string_me(i):
 
 def string_to_date(i):
     if "," in i:
-        i = i[(len(i) - len('11/11/2016, 00:00')):len(i)]
+        i = datetime.strptime(i, "%d/%m/%Y, %H:%M")
     else:
-        i = i[(len(i) - len('11/11/2016')):len(i)]
-    i = get_rid(i[(len(i.split('/')[0]) - 2):len(i)])
-    i = refactor_string(i)
-    return __string_me(i)
+        i = datetime.strptime(i, "%d/%m/%Y")
+    return i
+#   i = get_rid(i[(len(i.split('/')[0]) - 2):len(i)])
+#   i = refactor_string(i)
+#   return __string_me(i)1
 
 
 def check_folder(url):
-    soup = BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url)), 'html.parser')
+    soup = BeautifulSoup(urllib2.urlopen(urllib2.Request(url)), 'html.parser')
     now = datetime.now()
     for link in soup.findAll('table'):
         if 'Expected' in link.getText():

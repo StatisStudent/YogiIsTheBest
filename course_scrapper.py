@@ -21,15 +21,12 @@ class CoursePage:
     def __str__(self):
         return str(self.assignments_list)
 
-    # def __repr__(self):
-    #     print str(self.assignments_list)
-
     @property
     def get_assignment_data(self):
         name = "Course "+self.unicode_to_str(self.name)
         ass = "There are currently no active assignments" if not self.lastAss else "Assignment "+self.lastAss
         date = "" if not self.lastAss else "\n\tSubmission Date: "+self.currAssDate
-        return name + "\n\t" + ass + date
+        return name + "\n\t" + ass + date + '\n'
 
     def __assignment_name_appender(self, link):
         if link.h2 is not None:

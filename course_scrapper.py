@@ -75,7 +75,7 @@ class CoursePage:
     @staticmethod
     def unicode_to_str(uni_str):
         return unicodedata.normalize('NFKD', uni_str).encode('ascii', 'ignore')
-
+    last = ""
     def __folder_get_page(self, soup):
         comments = soup.findAll(text=lambda text: isinstance(text, Comment))
         for j in comments:

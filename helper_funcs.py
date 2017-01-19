@@ -28,13 +28,13 @@ import unicodedata
 
 def prettify_list(lst):
     now = datetime.now()
-    temp_lst = []
-    for k in lst:
-        if string_to_date(k).date() < now.date():
-            temp_lst.append(k)
-    for k in temp_lst:
-        lst.remove(k)
-    return lst
+    # temp_lst = []
+    # for k in lst:
+    #     if string_to_date(k).date() < now.date():
+    #         temp_lst.append(k)
+    # for k in temp_lst:
+    #     lst.remove(k)
+    return filter(lambda x: string_to_date(x).date() >= now.date(), lst)
 
 
 def get_ass_name(link):

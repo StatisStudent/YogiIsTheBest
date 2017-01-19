@@ -65,9 +65,11 @@ class CoursePage:
             if due != '' or expected != '':
                 if expected != '' and now.date() >= expected.date() and due != '':
                     lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
+                    self.__assignment_name_appender(link)
                 elif expected == '' and due != '':
                     lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
-                self.__assignment_name_appender(link)
+                    self.__assignment_name_appender(link)
+
 
         return lst
 
@@ -112,5 +114,6 @@ class CoursePage:
         # lst.sort(key=lambda d: datetime.strptime(d, "%d/%m/%Y, %H:%M") if ':' in d else datetime.strptime(d, "%d/%m/%Y"))
         self.currAssDate = lst[0]
         while len(lst) != len(self.lastAss):
+            #remove the hw name
             self.lastAss.remove(self.lastAss[0])
         self.lastAss = self.lastAss[0]

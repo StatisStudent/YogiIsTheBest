@@ -1,6 +1,8 @@
 import urllib2
 from bs4 import BeautifulSoup
 from datetime import datetime
+import unicodedata
+
 
 
 # def get_rid(word):
@@ -36,7 +38,9 @@ def prettify_list(lst):
 
 
 def get_ass_name(link):
-    return link.h2.getText()
+    tmp = link.h2.getText()
+    if tmp != "": return tmp
+    return link.h2.contents[0].attrs[u'data-lang-en']
 
 
 def string_to_date(i):

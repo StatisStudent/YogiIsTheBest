@@ -34,48 +34,46 @@ class CoursePage:
 
     def __get_expected(self, soup):
         lst = []
-        list1 = []
-        list2 = []
         now = datetime.now()
 
-        for link in soup.findAll('span'):
-            x = re.search(r"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}",link.getText())
-            r = re.search(r"(HW|Homework)([0-9]| [0-9])",link.getText())
-            if x is not None:
-                # print "this is the date",x.group(0) if x is not None else None
-                list1.append(x.group(0))
-            if r is not None:
-                # print "this is the name",r.group(0) if r is not None else None
-                list2.append(r.group(0))
+        try:
+            for link in soup.findAll('table'):
+                expected = ''
+                due = ''
+                for t in link.findAll('tr'):
+                    for s in t.findAll('span'):
+                        if u'data-lang-en' in s.attrs and u'Expected' in s.attrs[u'data-lang-en']:
+                            expected = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
 
-        for link in soup.findAll('table'):
-            expected = ''
-            due = ''
-            for t in link.findAll('tr'):
-                for s in t.findAll('span'):
-                    if u'data-lang-en' in s.attrs and u'Expected' in s.attrs[u'data-lang-en']:
-                        expected = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
+                        if u'data-lang-en' in s.attrs and u'Due date' in s.attrs[u'data-lang-en']:
+                            due = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
 
-                    if u'data-lang-en' in s.attrs and u'Due date' in s.attrs[u'data-lang-en']:
-                        due = helper_funcs.string_to_date(self.unicode_to_str(t.contents[1].getText()))
+                if due != '' or expected != '':
+                    if expected != '' and now.date() >= expected.date() and due != '':
+                        lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
+                        self.__assignment_name_appender(link)
+                    elif expected == '' and due != '':
+                        lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
+                        self.__assignment_name_appender(link)
 
-            if due != '' or expected != '':
-                if expected != '' and now.date() >= expected.date() and due != '':
-                    lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
-                    self.__assignment_name_appender(link)
-                elif expected == '' and due != '':
-                    lst.append(str(due.day)+'/'+str(due.month)+'/'+str(due.year))
-                    self.__assignment_name_appender(link)
-
-
-        return lst
-
-        return zip(list2,list1)
+            return lst
+        except Exception:
+            list1 = []
+            list2 = []
+            for link in soup.findAll('span'):
+                x = re.search(r"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}", link.getText())
+                r = re.search(r"(HW|Homework)([0-9]| [0-9])", link.getText())
+                if x is not None:
+                    list1.append(x.group(0))
+                if r is not None:
+                    list2.append(r.group(0))
+            return zip(list2, list1)
 
     @staticmethod
     def unicode_to_str(uni_str):
         return unicodedata.normalize('NFKD', uni_str).encode('ascii', 'ignore')
     last = ""
+
     def __folder_get_page(self, soup):
         comments = soup.findAll(text=lambda text: isinstance(text, Comment))
         for j in comments:
@@ -108,7 +106,6 @@ class CoursePage:
         if not lst:
             self.lastAss = []
             return
-        # lst.sort(key=lambda d: datetime.strptime(d, "%d/%m/%Y, %H:%M") if ':' in d else datetime.strptime(d, "%d/%m/%Y"))
         self.currAssDate = lst[0]
         while len(lst) != len(self.lastAss):
             #remove the hw name

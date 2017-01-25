@@ -10,27 +10,28 @@
 - Big mini-project
 
 ### Target
-- Help students to manage thier HW better.
-- We achienve that by scraping Webcourse to get the assignments dates.
-- Then show them in a nice GUI.
+- Help students manage their HW easier.
+- We achieve that by scraping the Webcourse to get the assignments dates and names.
+- Then show it to them in a nice GUI.
 
 ### Code Explaintion
 Two main parts:
 1. Web scraper:
-The Scrapper lib we used is BeautifulSoup. we used it in order to parse and grab
-html pages of the assinments from the webcourse sites.
+The Scrapper library we used is BeautifulSoup. We used it to parse and grab HTML pages of the assignments from the webcourse sites.
 
 2. GUI
-Which included multipile select windows that allowed users to choose there courses. The GUI also show the end result of the scarping in a scrolable window.
+Which included multipile select windows, that allowed users to choose their courses. The GUI also shows the end result of the scarping in a scrolable window.
 
 ### implemention
-We crafted `class CoursePage` that initated by a course name and grabs all the relevent information about it.
+We crafted `class CoursePage` that is initated by a course number and grabs all of the relevent information about it.
 
-The main function that does the parsing of the assigments html page is `__get_expected` which uses the BeautifulSoup function `findAll` that separates html page by tags. Then we iterate the result and try to find keyword the indicte assinment like `Expected` or `Due date`.
+The main function that does the parsing of the assigments' HTML page is `__get_expected` which uses the BeautifulSoup function `findAll` that separates the HTML page by tags. Then we iterate the result and try to find keyword the indicte assignments like `Expected` or `Due date`.
 
-If thats fail (mostly becuase the work of Yaniv Hamo isn't preducing consistent code) we tring finding the relevnt information by using REGEX that desiged to fit the case (we don't use that method exclusively as that takes too long)
+If that fails (usually becuase the work of Yaniv Hamo isn't producing consistent code and structure), we try finding the relevant information by using REGEX that were designed to fit this case (we don't use that method exclusively as that takes too long).
 
-We also checks for unusual assigment pages that have folders in it (like in OS course) and handle these too, as they require more work.
+We also checks for unusual assigment pages that have folders in it (like in the OS course) and handle these too, as they require more work.
+
+If the user selects courses that have no assignments pages (like seminars, projects and advanced topics), we notify him that - the GUI presents the course number (and name) with a short comment ("This course doesn't have an assignments page").
 
 The result are shown in a GUI that lists all the upcoming work you have to do.
 

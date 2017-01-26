@@ -36,3 +36,19 @@ If the user selects courses that have no assignments pages (like seminars, proje
 
 The result are shown in a GUI that lists all the upcoming work you have to do.
 
+### Running
+
+1. Using the `.exe`:
+
+    Run the `.exe`, wait about 30 seconds, enjoy.
+
+2. Running the `.py` files directly:
+
+    Make sure you have the following libraries:
+      * Beutifulsoup
+      * urllib2
+      * easygui
+   
+   (you can simply run the command `pip install -r req.txt` and it will install it automatically)
+   
+   and run the file `gui_file.py`.

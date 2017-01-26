@@ -49,6 +49,6 @@ The result are shown in a GUI that lists all the upcoming work you have to do.
       * urllib2
       * easygui
    
-   (you can simply run the command `pip install -r req.txt` and it will install it automatically)
+   (you can simply run the command `pip install -r requirements.txt` and it will install it automatically)
    
    and run the file `gui_file.py`.

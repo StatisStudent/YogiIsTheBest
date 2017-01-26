@@ -40,7 +40,7 @@ The result are shown in a GUI that lists all the upcoming work you have to do.
 
 1. Using the `.exe`:
 
-    Run the `.exe`, wait about 30 seconds, enjoy.
+    Run the `.exe` (int the `dist` folder), wait about 30 seconds, enjoy.
 
 2. Running the `.py` files directly:
 

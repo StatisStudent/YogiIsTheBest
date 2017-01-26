@@ -16,13 +16,14 @@
 
 ### Code Explaintion
 Two main parts:
+
 1. Web scraper:
 The Scrapper library we used is BeautifulSoup. We used it to parse and grab HTML pages of the assignments from the webcourse sites.
 
 2. GUI
 Which included multipile select windows, that allowed users to choose their courses. The GUI also shows the end result of the scarping in a scrolable window.
 
-### implemention
+### Implemention
 We crafted `class CoursePage` that is initated by a course number and grabs all of the relevent information about it.
 
 The main function that does the parsing of the assigments' HTML page is `__get_expected` which uses the BeautifulSoup function `findAll` that separates the HTML page by tags. Then we iterate the result and try to find keyword the indicte assignments like `Expected` or `Due date`.

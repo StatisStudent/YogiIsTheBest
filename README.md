@@ -52,3 +52,6 @@ The result are shown in a GUI that lists all the upcoming work you have to do.
    (you can simply run the command `pip install -r requirements.txt` and it will install it automatically)
    
    and run the file `gui_file.py`.
+
+####
+ https://github.com/StatisStudent/YogiIsTheBest
